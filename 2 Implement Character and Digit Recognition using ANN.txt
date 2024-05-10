@@ -1,0 +1,20 @@
+import tensorflow as tf 
+from tensorflow import keras 
+from sklearn.model_selection import train_test_split 
+import numpy as np 
+mnist = keras.datasets.mnist 
+(train_images, train_labels), (test_images, test_labels) = mnist.load_data() 
+train_images = train_images / 255.0 
+test_images = test_images / 255.0 
+model = keras.Sequential([keras.layers.Flatten(input_shape=(28, 28)),keras.layers.Dense(128, activation='relu'), keras.layers.Dense(10,activation='softmax')]) 
+model.compile(optimizer='adam',loss='sparse_categorical_crossentropy',               metrics=['accuracy']) 
+train_images, val_images, train_labels, val_labels = train_test_split(train_images, train_labels, test_size=0.1)
+model.fit(train_images, train_labels, epochs=5, validation_data=(val_images, val_labels)) 
+test_loss, test_acc = model.evaluate(test_images, test_labels)
+print("\nTest accuracy:", test_acc)
+sample_image = test_images[0]
+sample_label=test_labels[0]
+predictions=model.predict(np.expand_dims(sample_image, axis=0))
+predicted_label = np.argmax(predictions)
+print("\nSample Test Image Label:", sample_label)
+print("Predicted Label:", predicted_label) 
